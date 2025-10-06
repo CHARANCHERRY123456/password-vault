@@ -1,5 +1,4 @@
-"use client"
-import { hashPassowrd } from "@/lib/crypto";
+"use client";
 import { createContext, useState } from "react";
 
 interface User{
@@ -23,7 +22,7 @@ export function AuthProvider({children}:{children: React.ReactNode}){
 
     const signUp = async (email : string , passowrd : string) => {
         setIsLoading(true);
-        const hashedPassword = await hashPassowrd(passowrd);
+        
         
         
     }
