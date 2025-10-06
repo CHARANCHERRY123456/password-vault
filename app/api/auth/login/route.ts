@@ -29,7 +29,10 @@ export async function POST(req: NextRequest) {
         const token = await signToken({ id: user._id, email: user.email });
         await createSessionToken(token);
         
-        redirect("/dashboard");
+        return NextResponse.json(
+            { message: "Login successful", token },
+            { status: 200 }
+        );
     } catch (error) {
         console.error("Login error:", error);
         return NextResponse.json(

@@ -3,7 +3,6 @@ import connectToDatabase from "../../../../lib/mongodb";
 import User from "../../../../models/User";
 import { hashPassword, signToken } from "../../../../lib/auth";
 import { createSessionToken } from "@/lib/session";
-import { redirect } from "next/navigation";
 
 export async function POST(req: NextRequest) {
     try {
@@ -24,11 +23,10 @@ export async function POST(req: NextRequest) {
 
         createSessionToken(token);
 
-        redirect("/dashboard");
-        // return NextResponse.json(
-        //     { message: "User created successfully", newUser ,token },
-        //     { status: 201 }
-        // );
+        return NextResponse.json(
+            { message: "User created successfully", newUser ,token },
+            { status: 201 }
+        );
     } catch (error) {
         console.error("Registration error:", error);
         return NextResponse.json(
