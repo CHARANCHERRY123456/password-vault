@@ -2,7 +2,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Providers from "./providers";
-import LogoutButton from "@/components/Logout";
+import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Password Vault",
@@ -14,9 +14,7 @@ export default function RootLayout({children}:{children: React.ReactNode}) {
     <html lang="en" suppressHydrationWarning >
       <body className="font-sans antialiased">
         <Providers>
-          <div className="flex flex-row-reverse p-4">
-            <LogoutButton />
-          </div>
+          <Navbar />
           {children}
         </Providers>
       </body>
