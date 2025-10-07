@@ -12,7 +12,6 @@ export default function DashboardPage() {
     const store = useVaultStore();
     const { filteredItems, vaultItems, searchQuery, selectedTag, isLoading } = store;
 
-    // Extract unique tags
     const allTags = useMemo(() => {
         const tags = new Set<string>();
         vaultItems.forEach((item) => item.tags?.forEach((tag) => tags.add(tag)));
