@@ -5,6 +5,8 @@ const publicPaths = ["/login", "/signup"];
 
 export default function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
+    console.log(pathname , "is the path name");
+    
     const isProtectedRoute = protectedPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
     const isPublicRoute = publicPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
 
@@ -24,6 +26,6 @@ export default function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/dashboard/:path*", "/login", "/signup"],
+    matcher: ["/dashboard/:path*", "/login", "/signup" ,"/"],
 };
 
