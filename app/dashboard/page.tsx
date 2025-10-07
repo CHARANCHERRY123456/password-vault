@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { useVaultStore } from '@/store/vaultStore';
 import VaultItem from '@/components/VaultItem';
 import AddEditVaultModal from '@/components/AddEditVaultModal';
@@ -9,6 +10,7 @@ import TagFilter from '@/components/vault/TagFilter';
 import EmptyState from '@/components/vault/EmptyState';
 
 export default function DashboardPage() {
+    const router = useRouter();
     const store = useVaultStore();
     const { filteredItems, vaultItems, searchQuery, selectedTag, isLoading } = store;
 
@@ -37,7 +39,7 @@ export default function DashboardPage() {
                         </p>
                     </div>
                     <button
-                        onClick={() => store.openModal()}
+                        onClick={() => router.push('/')}
                         className="px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition-colors"
                     >
                         ➕ Add New
@@ -80,7 +82,6 @@ export default function DashboardPage() {
                     <EmptyState
                         searchQuery={searchQuery}
                         selectedTag={selectedTag}
-                        onAddNew={() => store.openModal()}
                     />
                 )}
 

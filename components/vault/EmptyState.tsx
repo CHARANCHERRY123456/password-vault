@@ -1,10 +1,14 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 interface EmptyStateProps {
     searchQuery: string;
     selectedTag: string | null;
-    onAddNew: () => void;
 }
 
-export default function EmptyState({ searchQuery, selectedTag, onAddNew }: EmptyStateProps) {
+export default function EmptyState({ searchQuery, selectedTag }: EmptyStateProps) {
+    const router = useRouter();
     const hasFilters = searchQuery || selectedTag;
 
     return (
@@ -18,7 +22,7 @@ export default function EmptyState({ searchQuery, selectedTag, onAddNew }: Empty
             </p>
             {!hasFilters && (
                 <button
-                    onClick={onAddNew}
+                    onClick={() => router.push('/')}
                     className="px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                     ➕ Create First Item
