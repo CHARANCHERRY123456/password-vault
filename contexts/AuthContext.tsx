@@ -16,23 +16,32 @@ export default function AuthProvider(
 ){
     const [user , setUser] = useState<User | null>(null);
     useEffect(()=>{
-        fetch("/api/auth/me", {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.user) {
-                setUser(data.user);
-            } else {
+        async function fetchUser() {
+            try {
+                const res = await fetch("/api/auth/me", {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                });
+                
+                if (!res.ok) {
+                    setUser(null);
+                    return;
+                }
+                
+                const data = await res.json();
+                if (data && data.user) {
+                    setUser(data.user);
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error("Error fetching user:", error);
                 setUser(null);
             }
-        })
-        .catch((error) => {
-            console.error("Error fetching user:", error);
-            setUser(null);
-        });
+        }
+        
+        fetchUser();
     }, []);
 
     return (

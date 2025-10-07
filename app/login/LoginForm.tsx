@@ -3,8 +3,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginForm() {
+    const { user, setUser } = useAuth();
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -23,10 +25,12 @@ export default function LoginForm() {
                 credentials: "include",
                 body: JSON.stringify({ email, password }),
             });
-
+            
             if (res.ok) {
+                const data = await res.json();
+                setUser(data.user);
                 toast.success("Logged in");
-                router.push("/dashboard");
+                router.push("/");
                 return;
             }
 

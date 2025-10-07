@@ -17,10 +17,10 @@ export default function RootLayout({children}:{children: React.ReactNode}) {
   return (
     <html lang="en" suppressHydrationWarning >
       <body className={inter.className}>
-        <div className="flex flex-row-reverse">
-            <LogoutButton />
-        </div>
         <Providers>
+          <div className="flex flex-row-reverse p-4">
+            <LogoutButton />
+          </div>
           {children}
         </Providers>
       </body>

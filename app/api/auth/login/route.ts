@@ -30,7 +30,11 @@ export async function POST(req: NextRequest) {
         await createSessionToken(token);
         
         return NextResponse.json(
-            { message: "Login successful", token },
+            { 
+                message: "Login successful", 
+                token,
+                user: { id: user._id, email: user.email, name: user.name }
+            },
             { status: 200 }
         );
     } catch (error) {

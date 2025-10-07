@@ -21,10 +21,14 @@ export async function POST(req: NextRequest) {
         const newUser = await User.create({ email, password: hashedPassword , name });
         const token = await signToken({ id: newUser._id, email: newUser.email });
 
-        createSessionToken(token);
+        await createSessionToken(token);
 
         return NextResponse.json(
-            { message: "User created successfully", newUser ,token },
+            { 
+                message: "User created successfully", 
+                token,
+                user: { id: newUser._id, email: newUser.email, name: newUser.name }
+            },
             { status: 201 }
         );
     } catch (error) {
