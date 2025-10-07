@@ -1,14 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ZodError } from "zod";
 import connectToDatabase from "../../../../lib/mongodb";
 import User from "../../../../models/User";
 import { verifyPassword, signToken } from "../../../../lib/auth";
 import { createSessionToken } from "@/lib/session";
-import { redirect } from "next/navigation";
+import { loginSchema } from "@/lib/validations/auth";
 
 export async function POST(req: NextRequest) {
     try {
+        const body = await req.json();
+
+        // Validate request body using Zod schema
+        const validatedData = loginSchema.parse(body);
+        const { email, password } = validatedData;
+
         await connectToDatabase();
-        const { email, password } = await req.json();
         
         const user = await User.findOne({ email });
         if (!user) {
@@ -38,6 +44,15 @@ export async function POST(req: NextRequest) {
             { status: 200 }
         );
     } catch (error) {
+        // Handle Zod validation errors
+        if (error instanceof ZodError) {
+            const firstError = error.issues[0];
+            return NextResponse.json(
+                { message: firstError.message },
+                { status: 400 }
+            );
+        }
+
         console.error("Login error:", error);
         return NextResponse.json(
             { message: "Internal server error" },
