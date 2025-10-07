@@ -20,6 +20,7 @@ export default function DashboardPage() {
 
     useEffect(() => {
         store.fetchVaultItems();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
