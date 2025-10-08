@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useCrypto } from '@/contexts/CryptoContext';
 
 interface VaultEntryFormProps {
     onSave: (data: {
@@ -14,6 +15,7 @@ interface VaultEntryFormProps {
 }
 
 export default function VaultEntryForm({ onSave }: VaultEntryFormProps) {
+    const { encryptText } = useCrypto();
     const [title, setTitle] = useState('');
     const [password, setPassword] = useState('');
     const [url, setUrl] = useState('');
@@ -47,9 +49,12 @@ export default function VaultEntryForm({ onSave }: VaultEntryFormProps) {
         setIsSubmitting(true);
 
         try {
+            // Encrypt the password before sending
+            const encryptedPassword = encryptText(password.trim());
+            
             const data = {
                 title: title.trim(),
-                password: password.trim(),
+                password: encryptedPassword, // Send encrypted password
                 url: url.trim() || undefined,
                 notes: notes.trim() || undefined,
                 tags: tags.trim() ? tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined,

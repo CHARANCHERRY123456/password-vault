@@ -4,9 +4,12 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCrypto } from "@/contexts/CryptoContext";
+import { deriveKey, storeKey } from "@/lib/crypto";
 
 export default function LoginForm() {
     const { setUser } = useAuth();
+    const { reloadKey } = useCrypto();
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -44,7 +47,11 @@ export default function LoginForm() {
                     return;
                 }
 
-                // Login successful
+                // Login successful - derive and store encryption key
+                const encryptionKey = deriveKey(password);
+                storeKey(encryptionKey);
+                reloadKey(); // Reload the key in context
+                
                 setUser(data.user);
                 toast.success("✅ Logged in successfully");
                 router.push("/");

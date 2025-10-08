@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCopyPassword } from '@/hooks/useCopyPassword';
+import { useCrypto } from '@/contexts/CryptoContext';
 
 interface PasswordFieldProps {
     password: string;
@@ -8,6 +9,10 @@ interface PasswordFieldProps {
 export default function PasswordField({ password }: PasswordFieldProps) {
     const [showPassword, setShowPassword] = useState(false);
     const { copyPassword } = useCopyPassword();
+    const { decryptText } = useCrypto();
+
+    // Decrypt the password
+    const decryptedPassword = decryptText(password);
 
     return (
         <div className="mb-4">
@@ -16,7 +21,7 @@ export default function PasswordField({ password }: PasswordFieldProps) {
             </label>
             <div className="flex gap-2">
                 <div className="flex-1 bg-gray-50 dark:bg-gray-900 px-4 py-2 rounded-md font-mono text-sm text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600">
-                    {showPassword ? password : '•'.repeat(password.length)}
+                    {showPassword ? decryptedPassword : '•'.repeat(decryptedPassword.length)}
                 </div>
                 <button
                     onClick={() => setShowPassword(!showPassword)}
@@ -26,7 +31,7 @@ export default function PasswordField({ password }: PasswordFieldProps) {
                     {showPassword ? '🙈' : '👁️'}
                 </button>
                 <button
-                    onClick={() => copyPassword(password)}
+                    onClick={() => copyPassword(decryptedPassword)}
                     className="px-3 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 transition-colors"
                     title="Copy"
                 >

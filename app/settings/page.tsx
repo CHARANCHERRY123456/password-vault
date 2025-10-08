@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Enable2FA from "@/components/Enable2FA";
+import ExportImport from "@/components/ExportImport";
 
 interface User {
     id: string;
@@ -117,6 +118,9 @@ export default function SettingsPage() {
                         </p>
                     </div>
                 )}
+
+                {/* Export/Import Section */}
+                <ExportImport />
 
                 {/* Back Button */}
                 <div className="mt-8">

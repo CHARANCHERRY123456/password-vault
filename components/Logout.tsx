@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
+import { clearKey } from "@/lib/crypto";
 
 export default function LogoutButton() {
     const {user , setUser} = useAuth();
@@ -13,8 +14,9 @@ export default function LogoutButton() {
             onClick={()=>{
                 setLoggingOut(true);
                 fetch("/api/auth/logout").then(()=>{
-                    window.location.href = "/login"
-                    setUser(null)
+                    clearKey(); // Clear encryption key from localStorage
+                    setUser(null);
+                    window.location.href = "/login";
                 })
                 setLoggingOut(false);
             }}

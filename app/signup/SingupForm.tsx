@@ -5,9 +5,12 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCrypto } from "@/contexts/CryptoContext";
+import { deriveKey, storeKey } from "@/lib/crypto";
 
 export default function SignupForm() {
     const {setUser} = useAuth();
+    const { reloadKey } = useCrypto();
     const [email , setEmail] = useState("");
     const [password , setPassword] = useState("");
     const [conformPassword , setConformPassword] = useState("");
@@ -36,6 +39,12 @@ export default function SignupForm() {
 
             if (res.ok) {
                 const data = await res.json();
+                
+                // Derive and store encryption key
+                const encryptionKey = deriveKey(password);
+                storeKey(encryptionKey);
+                reloadKey(); // Reload the key in context
+                
                 setUser(data.user);
                 toast.success("Registered successfully");
                 router.push("/");
