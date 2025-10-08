@@ -1,23 +1,13 @@
 /* app/globals.css - Tailwind CSS v4 */
 @import "tailwindcss";
 
-/* Light defaults */
-:root {
-  --background: #ffffff;
-  --foreground: #111827;
+body {
+  background-color: #ffffff;
+  color: #111827;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-/* When the .dark class is present these override the variables */
-.dark {
-  --background: #0b1220;
-  --foreground: #e6eef8;
+.dark body {
+  background-color: #111827;
+  color: #f9fafb;
 }
-
-/* Apply variables to body so non-Tailwind rules also respond */
-html, body {
-  background-color: var(--background);
-  color: var(--foreground);
-}
-
-/* Optional: small helpers */
-a { color: inherit; }

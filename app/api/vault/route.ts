@@ -28,7 +28,7 @@ export async function POST(req: Request) {
         if (error instanceof ZodError) {
             return NextResponse.json({ 
                 message: "Validation error", 
-                errors: error.errors 
+                errors: error.issues 
             }, { status: 400 });
         }
         console.error("Error in /api/vault:", error);

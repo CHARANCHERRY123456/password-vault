@@ -60,7 +60,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         if (error instanceof ZodError) {
             return NextResponse.json({ 
                 message: "Validation error", 
-                errors: error.errors 
+                errors: error.issues 
             }, { status: 400 });
         }
         console.error("Error in PUT /api/vault/[id]:", error);
