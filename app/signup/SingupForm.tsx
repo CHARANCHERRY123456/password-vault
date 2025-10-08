@@ -55,8 +55,7 @@ export default function SignupForm() {
             const message = data.message || "Registration failed";
             setError(message);
             toast.error(message);
-        } catch (err : any) {
-            console.log(err.message + " is the error");
+        } catch (err) {
             setError("something went wrong");
             toast.error("Something went wrong");
         } finally {

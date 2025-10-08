@@ -8,6 +8,7 @@ import AddEditVaultModal from '@/components/AddEditVaultModal';
 import SearchBar from '@/components/vault/SearchBar';
 import TagFilter from '@/components/vault/TagFilter';
 import EmptyState from '@/components/vault/EmptyState';
+import ExportImportButtons from '@/components/ExportImportButtons';
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -28,12 +29,15 @@ export default function DashboardPage() {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <main className="max-w-7xl mx-auto px-4 py-8">
-                {/* Search & Filters */}
+                {/* Search & Filters & Export/Import */}
                 <div className="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border dark:border-gray-700">
-                    <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex flex-col md:flex-row gap-4 mb-4">
                         <SearchBar value={searchQuery} onChange={store.setSearchQuery} />
                         <TagFilter tags={allTags} selectedTag={selectedTag} onChange={store.setSelectedTag} />
                     </div>
+                    
+                    {/* Export/Import Buttons */}
+                    <ExportImportButtons vaultItems={vaultItems} onImportSuccess={store.fetchVaultItems} />
                 </div>
 
                 {/* Loading */}

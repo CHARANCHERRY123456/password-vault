@@ -5,41 +5,30 @@ import { toast } from "react-toastify";
 import { downloadJSON, readJSONFile } from "@/lib/exportImport";
 import { useCrypto } from "@/contexts/CryptoContext";
 
-export default function ExportImport() {
-    const { hasKey, decryptText, encryptText } = useCrypto();
-    const [password, setPassword] = useState("");
+interface ExportImportButtonsProps {
+    vaultItems: any[];
+    onImportSuccess: () => void;
+}
+
+export default function ExportImportButtons({ vaultItems, onImportSuccess }: ExportImportButtonsProps) {
+    const { hasKey } = useCrypto();
     const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [password, setPassword] = useState("");
     const [importData, setImportData] = useState<any>(null);
     const [isImporting, setIsImporting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Export vault data
-    const handleExport = async () => {
-        try {
-            const response = await fetch("/api/vault", {
-                credentials: "include",
-            });
-
-            if (!response.ok) {
-                toast.error("Failed to fetch vault items");
-                return;
-            }
-
-            const data = await response.json();
-            const items = data.items || [];
-
-            if (items.length === 0) {
-                toast.info("No vault items to export");
-                return;
-            }
-
-            // Download encrypted vault data
-            const filename = `vault-backup-${new Date().toISOString().split('T')[0]}.json`;
-            downloadJSON({ items, exportedAt: new Date().toISOString() }, filename);
-            toast.success(`✅ Exported ${items.length} items`);
-        } catch (error) {
-            toast.error("Failed to export vault");
+    const handleExport = () => {
+        if (vaultItems.length === 0) {
+            toast.info("No vault items to export");
+            return;
         }
+
+        // Download encrypted vault data
+        const filename = `vault-backup-${new Date().toISOString().split('T')[0]}.json`;
+        downloadJSON({ items: vaultItems, exportedAt: new Date().toISOString() }, filename);
+        toast.success(`✅ Exported ${vaultItems.length} items`);
     };
 
     // Handle file selection
@@ -106,6 +95,9 @@ export default function ExportImport() {
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
             }
+
+            // Refresh vault items
+            onImportSuccess();
         } catch (error) {
             toast.error("Failed to import vault");
         } finally {
@@ -124,45 +116,31 @@ export default function ExportImport() {
 
     return (
         <>
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                    💾 Backup & Restore
-                </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                    Export your vault as an encrypted JSON file, or import from a previous backup.
-                </p>
+            <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                {/* Export Button */}
+                <button
+                    onClick={handleExport}
+                    disabled={!hasKey || vaultItems.length === 0}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                    title="Export all vault items"
+                >
+                    📥 Export ({vaultItems.length})
+                </button>
 
-                <div className="flex flex-col sm:flex-row gap-4">
-                    {/* Export Button */}
-                    <button
-                        onClick={handleExport}
+                {/* Import Button */}
+                <label>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".json"
+                        onChange={handleFileSelect}
                         disabled={!hasKey}
-                        className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white rounded-md font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-                    >
-                        📥 Export Vault
-                    </button>
-
-                    {/* Import Button */}
-                    <label className="flex-1">
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept=".json"
-                            onChange={handleFileSelect}
-                            disabled={!hasKey}
-                            className="hidden"
-                        />
-                        <div className="px-6 py-3 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-md font-medium transition-colors text-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
-                            📤 Import Vault
-                        </div>
-                    </label>
-                </div>
-
-                {!hasKey && (
-                    <p className="text-xs text-red-600 dark:text-red-400 mt-3">
-                        ⚠️ Please login first to use export/import features
-                    </p>
-                )}
+                        className="hidden"
+                    />
+                    <div className="px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-md text-sm font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-sm inline-block">
+                        📤 Import Backup
+                    </div>
+                </label>
             </div>
 
             {/* Password Confirmation Modal */}
